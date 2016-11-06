@@ -111,5 +111,12 @@ public class Tweet {
 	public void setGeo(String geo) {
 		this.geo = geo;
 	}
+
+	@Override
+	public String toString() {
+		return "Tweet [id=" + id + ", permalink=" + permalink + ", username=" + username + ", text=" + text + ", date="
+				+ date + ", retweets=" + retweets + ", favorites=" + favorites + ", mentions=" + mentions
+				+ ", hashtags=" + hashtags + ", geo=" + geo + "]";
+	}
 	
 }

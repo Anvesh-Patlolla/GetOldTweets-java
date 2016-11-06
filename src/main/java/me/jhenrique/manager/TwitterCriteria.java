@@ -17,6 +17,8 @@ public class TwitterCriteria {
 	private String querySearch;
 	
 	private int maxTweets;
+
+	private boolean positive;
 	
 	private TwitterCriteria() {
 	}
@@ -74,6 +76,11 @@ public class TwitterCriteria {
 		this.maxTweets = maxTweets;
 		return this;
 	}
+	
+	public TwitterCriteria setPositiveTweet(boolean positive) {
+		this.positive = positive;
+		return this;
+	}
 
 	String getUsername() {
 		return username;
@@ -94,5 +101,10 @@ public class TwitterCriteria {
 	int getMaxTweets() {
 		return maxTweets;
 	}
+	
+	public boolean getPositive() {
+		return positive;
+	}
+
 	
 }
