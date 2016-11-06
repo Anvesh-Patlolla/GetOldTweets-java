@@ -50,26 +50,29 @@ public class TweetManager {
 	private static String getURLResponse(String username, String since, String until, String querySearch,
 			String scrollCursor, boolean positive) throws Exception {
 		String appendQuery = "";
+		if (querySearch != null) {
+			appendQuery += "" + querySearch+" ";
+		}
 		if (username != null) {
-			appendQuery += "from:" + username;
+			appendQuery += "from:" + username+" ";
 		}
 		if (since != null) {
-			appendQuery += " since:" + since;
+			appendQuery += "since:" + since+" ";
 		}
 		if (until != null) {
-			appendQuery += " until:" + until;
+			appendQuery += "until:" + until+" ";
 		}
-		if (querySearch != null) {
-			appendQuery += " " + querySearch;
-		}
+		
 		if (positive) {
 			appendQuery += ":)";
 		} else {
 			appendQuery += ":(";
 		}
 
-		String url = String.format("https://twitter.com/i/search/timeline?f=realtime&q=%s&src=typd&max_position=%s",
+		String url = String.format("https://twitter.com/i/search/timeline?vertical=default&q=%s&src=typd&include_available_features=1&include_entities=1&lang=en&max_position=%s&reset_error_state=false",
 				URLEncoder.encode(appendQuery, "UTF-8"), scrollCursor);
+
+		System.out.println("URL:" + url);
 
 		HttpGet httpGet = new HttpGet(url);
 		HttpEntity resp = defaultHttpClient.execute(httpGet).getEntity();
