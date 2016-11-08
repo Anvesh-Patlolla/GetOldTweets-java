@@ -22,7 +22,7 @@ public class Driver {
 	public static void main(String[] args) {
 		Driver driver = new Driver();
 		long start = System.currentTimeMillis();
-		driver.getTweets("VIVOIPL OR IPL", "2016-04-01", "2016-05-30", 5000, true);
+		driver.getTweets("IPL", "2016-04-01", "2016-05-31", 5000, true);
 		long end = System.currentTimeMillis();
 		System.out.println("time:" + (start - end));
 	}
@@ -44,10 +44,10 @@ public class Driver {
 
 		// System.out.println(tweets.size());
 		for (Tweet tweet : tweets) {
-			if (tweet.getGeo() != null && tweet.getGeo().length() > 0) {
+			if (true || tweet.getGeo() != null && tweet.getGeo().length() > 0) {
 				// System.out.println(tweet.toString());
 				try {
-					String temp = escapeChars(tweet.getText()) + "," + getCordinates(tweet.getGeo());
+					String temp = escapeChars("\"" + tweet.getText()) + "\"" + "," + getCordinates(tweet.getGeo());
 					bw.write(temp);
 					bw.newLine();
 					System.out.println(temp + "\n");
@@ -68,17 +68,18 @@ public class Driver {
 	}
 
 	private String escapeChars(String text) {
-		return text.replaceAll(",", "\\\\,");
+		// return text.replaceAll(",", "\\\\,");
+		return text;
 	}
 
 	private String getCordinates(String geo) {
 		String latLong = "";
 		try {
 			LatLng location = getLocation(geo);
-			latLong = location.getLat() + "," + location.getLng();
+			latLong = "\"" + location.getLat() + "\"" + "," + "\"" + location.getLng() + "\"";
 		} catch (Exception e) {
 			e.printStackTrace();
-			latLong = "0,0";
+			latLong = "\"0\",\"0\"";
 		}
 		return latLong;
 	}
