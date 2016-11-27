@@ -18,11 +18,25 @@ import me.jhenrique.model.Tweet;
 
 public class Driver {
 	private static Geocoder geocoder;
+	private static boolean isGeoTagEnabled = false;
+	private String outputFileName = "/Users/anvesh/Desktop/alda/output_mar_";
 
 	public static void main(String[] args) {
 		Driver driver = new Driver();
+		if (args.length < 6) {
+			System.out.println("usage : \n IPL 2016-03-01 2016-03-31 50000 false false");
+			return;
+		}
+		String searchString = args[0];
+		String startDate = args[1];
+		String endDate = args[2];
+		int maxTweets = Integer.parseInt(args[3]);
+		boolean sentiment = args[4].equalsIgnoreCase("true") ? true : false;
+		isGeoTagEnabled = args[5].equalsIgnoreCase("true") ? true : false;
+
 		long start = System.currentTimeMillis();
-		driver.getTweets("IPL", "2016-04-01", "2016-05-31", 5000, true);
+		// driver.getTweets("IPL", "2016-03-01", "2016-03-31", 50000, false);
+		driver.getTweets(searchString, startDate, endDate, maxTweets, sentiment);
 		long end = System.currentTimeMillis();
 		System.out.println("time:" + (start - end));
 	}
@@ -37,20 +51,36 @@ public class Driver {
 		int count = 0;
 		BufferedWriter bw = null;
 		try {
-			bw = new BufferedWriter(new FileWriter("/Users/anvesh/Desktop/alda/output_true.csv"));
+			if (isGeoTagEnabled) {
+				outputFileName += "geoEnabled_true_";
+
+			} else {
+				outputFileName += "geoEnabled_false_";
+			}
+			if (sentiment) {
+				outputFileName += "sentiment_true.csv";
+			} else {
+				outputFileName += "sentiment_false.csv";
+			}
+			bw = new BufferedWriter(new FileWriter(outputFileName));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// System.out.println(tweets.size());
 		for (Tweet tweet : tweets) {
-			if (true || tweet.getGeo() != null && tweet.getGeo().length() > 0) {
+			if (!isGeoTagEnabled || tweet.getGeo() != null && tweet.getGeo().length() > 0) {
 				// System.out.println(tweet.toString());
 				try {
-					String temp = escapeChars("\"" + tweet.getText()) + "\"" + "," + getCordinates(tweet.getGeo());
+					String temp = null;
+					if (isGeoTagEnabled) {
+						temp = escapeChars("\"" + tweet.getText()) + "\"" + "," + getCordinates(tweet.getGeo());
+					} else {
+						temp = getCordinates(tweet.getGeo());
+					}
 					bw.write(temp);
 					bw.newLine();
-					System.out.println(temp + "\n");
+					//System.out.println(temp + "\n");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -69,6 +99,7 @@ public class Driver {
 
 	private String escapeChars(String text) {
 		// return text.replaceAll(",", "\\\\,");
+		text = text.replaceAll("\\P{Print}", "");
 		return text;
 	}
 
